@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>進路情報</title>
+<style>
+:root{--b:#2563eb;--ink:#172554;--m:#64748b;--l:#dbe4ef;--bg:#f4f7fb;--soft:#eff6ff;--warn:#9a4d00}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP",sans-serif}
+.app{max-width:760px;min-height:100dvh;margin:auto;background:#fff}
+header{position:sticky;top:0;z-index:4;padding:13px 18px;border-bottom:1px solid var(--l);background:#fffffff5;backdrop-filter:blur(10px)}
+.brand{font-weight:800;font-size:19px}
+.sub{font-size:11px;color:var(--m);margin-top:3px}
+main{padding:18px 16px 96px}
+.screen{display:none}
+.screen.active{display:block;animation:in .16s ease}
+@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1}}
+h2{font-size:23px;margin:3px 0 12px}
+h3{font-size:15px;margin:0 0 7px}
+p{line-height:1.65;color:#475569}
+.small{font-size:12px;color:var(--m)}
+.card{margin:11px 0;padding:15px;border:1px solid var(--l);border-radius:17px;background:#fff}
+.hero{padding:22px 18px;border:0;background:linear-gradient(135deg,#dbeafe,#fff)}
+.hero h2{font-size:26px}
+.notice{margin:11px 0;padding:10px 12px;border-left:4px solid #f59e0b;border-radius:8px;background:#fffbeb;color:#78350f;font-size:12px;line-height:1.6}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.feature{text-align:left;min-height:105px}
+.feature span{display:block;font-size:23px;margin-bottom:7px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.primary,.secondary,.choice,.opt{padding:12px 13px;border:1px solid #cbd5e1;border-radius:12px;background:#fff;color:inherit}
+.primary{width:100%;background:var(--b);border-color:var(--b);color:#fff;font-weight:800}
+.secondary{color:#1d4ed8;border-color:#bfdbfe}
+.choice{width:100%;text-align:left}
+.choice[aria-pressed=true]{padding:11px 12px;border:2px solid var(--b);background:var(--soft);color:#1d4ed8;font-weight:700}
+.badge,.tag,.chip{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px}
+.badge{background:#e2e8f0;font-weight:700}
+.demo{background:#fef3c7;color:#92400e}
+.tag{background:#e0e7ff;color:#3730a3}
+.chip{margin:3px;border:1px solid #dbe4ef;background:#f8fafc;color:#334155}
+.check{display:flex;gap:9px;align-items:flex-start;padding:8px 1px}
+.check input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--b)}
+.inputrow{display:flex;gap:8px}
+.inputrow input{flex:1;min-width:0}
+input,select,textarea{width:100%;padding:11px;border:1px solid #cbd5e1;border-radius:12px;background:#fff}
+textarea{min-height:72px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.result{margin-top:10px;padding:12px;border-radius:12px;background:#f8fafc}
+.msg{margin-top:10px;padding:10px 12px;border-radius:10px;background:#fef2f2;color:#b91c1c}
+.source{margin-top:9px;font-size:11px;color:var(--m);line-height:1.6}
+.source a{color:#1d4ed8}
+.unknown{color:var(--warn);font-weight:800}
+.save{float:right;border:0;background:none;font-size:18px}
+.on{color:#eab308}
+.tablewrap{overflow:auto;border:1px solid var(--l);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{min-width:125px;padding:9px;border-right:1px solid var(--l);border-bottom:1px solid var(--l);text-align:left;vertical-align:top}
+th{background:#f8fafc}
+nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:5;width:min(100%,760px);display:grid;grid-template-columns:repeat(4,1fr);padding:6px 4px 8px;border-top:1px solid var(--l);background:#fffffff5}
+nav button{padding:5px 1px;border:0;background:none;color:var(--m);font-size:10px}
+nav button[aria-current=page]{color:var(--b);font-weight:800}
+.ico{display:block;font-size:18px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">進路情報</div>
+  <div class="sub">迷いを、次の一歩に変える進路サポート</div>
+</header>
+
+<main>
+<section id="home" class="screen active">
+  <div class="card hero">
+    <span class="badge demo">試作版</span>
+    <h2>進路を、少しずつ整理しよう。</h2>
+    <p>「何から調べる？」を決めるところから始めます。</p>
+    <button class="primary" data-go="nav">進路ナビを使う</button>
+  </div>
+
+  <div class="notice">
+    このサイトは情報整理のデモです。入試・学費・資格・締切は、必ず学校や公的機関の<strong>公式情報</strong>で確認してください。
+  </div>
+
+  <div class="grid">
+    <button class="card feature" data-go="compare"><span>⚖️</span><b>進路比較</b><br><small>候補の違いを整理</small></button>
+    <button class="card feature" data-go="search"><span>⌕</span><b>情報を探す</b><br><small>公式情報への入口</small></button>
+  </div>
+
+  <h3 style="margin-top:22px">おすすめのテーマ</h3>
+  <div id="featured"></div>
+
+  <div class="card">
+    <h3>進路ミニクイズ</h3>
+    <div id="quiz"></div>
+  </div>
+</section>
+
+<section id="nav" class="screen">
+  <h2>進路ナビ</h2>
+  <p><span class="badge demo">AI未接続・一般的な案内</span> 入力は送信されません。</p>
+
+  <div class="card"><h3>1. 今の段階</h3><div class="grid" id="stage"></div></div>
+  <div class="card"><h3>2. 学年・立場</h3><div class="grid" id="grade"></div></div>
+  <div class="card"><h3>3. 気になっている進路（複数選択可）</h3><div id="routes"></div></div>
+  <div class="card"><h3>4. 優先したいこと（最大3つ）</h3><div id="priorities"></div></div>
+
+  <div class="card">
+    <h3>5. 具体的に気になること（任意）</h3>
+    <textarea id="free" maxlength="300" placeholder="例：看護系に進むには何を調べればいい？"></textarea>
+  </div>
+
+  <button class="primary" id="analyze">次にすることを整理する</button>
+  <button class="secondary" id="resetNav" style="width:100%;margin-top:8px">入力をリセット</button>
+  <div id="analysis"></div>
+</section>
+
+<section id="compare" class="screen">
+  <h2>進路比較</h2>
+  <p>学校・分野・就職など、候補を2〜3件並べて整理できます。</p>
+
+  <div class="card">
+    <h3>候補を追加</h3>
+    <div class="inputrow">
+      <input id="candidate" maxlength="40" placeholder="例：情報工学、看護、就職">
+      <button class="secondary" id="add">追加</button>
+    </div>
+    <div id="presets" style="margin-top:9px"></div>
+    <div id="selected"></div>
+  </div>
+
+  <div class="card"><h3>表示する項目</h3><div id="factors"></div></div>
+  <button class="primary" id="makeTable">比較表を見る</button>
+  <div id="tableResult"></div>
+</section>
+
+<section id="search" class="screen">
+  <h2>情報を探す</h2>
+  <p>キーワードだけでなく、進路の種類や知りたい目的からも絞り込めます。</p>
+
+  <div class="inputrow">
+    <input id="query" placeholder="例：奨学金、看護、文理選択">
+    <button class="secondary" id="searchBtn">検索</button>
+  </div>
+
+  <div class="filters">
+    <select id="type">
+      <option value="">すべての進路</option>
+      <option>大学・短大</option>
+      <option>専門学校</option>
+      <option>就職</option>
+      <option>共通</option>
+    </select>
+
+    <select id="purpose">
+      <option value="">すべての目的</option>
+      <option>選び方</option>
+      <option>入試・出願</option>
+      <option>費用・奨学金</option>
+      <option>学校生活・仕事</option>
+    </select>
+  </div>
+
+  <div id="cats" style="margin-top:8px"></div>
+  <div id="searchResult"></div>
+</section>
+</main>
+
+<nav>
+  <button data-go="home"><span class="ico">⌂</span>ホーム</button>
+  <button data-go="search"><span class="ico">⌕</span>検索</button>
+  <button data-go="nav"><span class="ico">◎</span>進路ナビ</button>
+  <button data-go="compare"><span class="ico">⇄</span>比較</button>
+</nav>
+</div>
+
+<script>
+const $ = x => document.getElementById(x);
+
+const src = {
+  mext: ["文部科学省", "https://www.mext.go.jp/"],
+  jasso: ["日本学生支援機構（JASSO）", "https://www.jasso.go.jp/"],
+  hello: ["ハローワークインターネットサービス", "https://www.hellowork.mhlw.go.jp/"]
+};
+
+const topics = [
+  ["system","大学・学部・学科の基本","大学制度","大学・短大","選び方","大学 学部 学科","大学制度の用語を整理し、学びたい内容から選択肢を広げる入口です。","mext"],
+  ["scholar","奨学金と学費を調べる","奨学金","共通","費用・奨学金","奨学金 学費 給付 貸与","制度、条件、締切は年度ごとに変わるため、必ず公式情報で確認しましょう。","jasso"],
+  ["human","文理選択を考えるときに","文理選択","共通","選び方","文系 理系 文理","得意・不得意だけで決めず、興味のある学びや仕事も一緒に整理します。","mext"],
+  ["exam","入試方式・出願の確認","入試","大学・短大","入試・出願","一般選抜 推薦 総合型選抜 受験","方式ごとに条件や提出物が異なります。志望校の募集要項を最終確認してください。","mext"],
+  ["vocation","専門学校を調べるポイント","専門学校","専門学校","選び方","専門学校 職業 実習 資格","学ぶ内容、実習、取得を目指せる資格、就職支援を学校ごとに確認します。","mext"],
+  ["job","就職を考えるときの情報収集","就職","就職","学校生活・仕事","就職 求人 仕事 ハローワーク","仕事内容、働く条件、相談窓口を確認しながら、学校の先生にも相談しましょう。","hello"]
+];
+
+function show(id) {
+  document.querySelectorAll(".screen").forEach(x => {
+    x.classList.toggle("active", x.id === id);
+  });
+
+  document.querySelectorAll("nav button").forEach(x => {
+    x.dataset.go === id
+      ? x.setAttribute("aria-current", "page")
+      : x.removeAttribute("aria-current");
+  });
+
+  history.replaceState(null, "", "#" + id);
+  scrollTo(0, 0);
+}
+
+document.addEventListener("click", e => {
+  const button = e.target.closest("[data-go]");
+  if (button) show(button.dataset.go);
+});
+
+$("featured").innerHTML = topics.slice(0, 2).map(topic => `
+  <article class="card">
+    <span class="tag">${topic[2]}</span>
+    <h3>${topic[1]}</h3>
+    <p>${topic[6]}</p>
+    <div class="source">
+      出典：
+      <a href="${src[topic[7]][1]}" target="_blank" rel="noopener">
+        ${src[topic[7]][0]}（公式サイト）
+      </a>
+      <br>
+      確認状況：
+      <span class="unknown">個別ページ・更新日を未確認</span>
+    </div>
+  </article>
+`).join("");
+
+const state = {
+  stage: "",
+  grade: "",
+  routes: [],
+  priorities: []
+};
+
+function createChoices(id, values, stateKey) {
+  $(id).innerHTML = values.map(value =>
+    `<button class="choice" aria-pressed="false">${value}</button>`
+  ).join("");
+
+  $(id).onclick = e => {
+    const button = e.target.closest("button");
+    if (!button) return;
+
+    $(id).querySelectorAll("button").forEach(item => {
+      item.setAttribute("aria-pressed", item === button);
+    });
+
+    state[stateKey] = button.textContent;
+  };
+}
+
+function createCheckboxes(id, values, stateKey, max) {
+  $(id).innerHTML = values.map(value =>
+    `<label class="check"><input type="checkbox" value="${value}">${value}</label>`
+  ).join("");
+
+  $(id).onchange = () => {
+    const selected = [...$(id).querySelectorAll(":checked")];
+
+    if (selected.length > max) {
+      selected[selected.length - 1].checked = false;
+    }
+
+    state[stateKey] = [...$(id).querySelectorAll(":checked")].map(x => x.value);
+  };
+}
+
+createChoices("stage", ["候補がある", "少し気になっている", "まだ分からない", "決める時期が近い"], "stage");
+createChoices("grade", ["中学生", "高校1年", "高校2年", "高校3年・既卒"], "grade");
+
+createCheckboxes("routes", [
+  "大学・短大",
+  "専門学校",
+  "就職",
+  "公務員",
+  "海外留学・海外進学",
+  "まだ選べない"
+], "routes", 3);
+
+createCheckboxes("priorities", [
+  "学びたい内容",
+  "学費・奨学金",
+  "入試・受験科目",
+  "通いやすさ",
+  "資格",
+  "就職・仕事",
+  "学校の雰囲気"
+], "priorities", 3);
+
+const actions = {
+  "大学・短大": "学部・学科の基本を確認して、気になる分野を2つ書き出す",
+  "専門学校": "学ぶ内容・実習・資格を学校ごとに比べる",
+  "就職": "仕事内容や働く条件を確認し、先生・相談窓口に相談する",
+  "公務員": "募集時期や試験内容は自治体・機関の公式情報を確認する",
+  "海外留学・海外進学": "学校の国際交流・進学担当に相談し、費用と語学要件を確認する",
+  "まだ選べない": "大学・専門学校・就職の違いを一つずつ調べる"
+};
+
+$("analyze").onclick = () => {
+  if (!state.routes.length && !$("free").value.trim()) {
+    $("analysis").innerHTML = `<div class="msg">気になっている進路を1つ選ぶか、具体的に気になることを書いてください。</div>`;
+    return;
+  }
+
+  let html = `
+    <div class="card">
+      <h3>次にすること <span class="badge demo">一般的な案内</span></h3>
+      <p>段階：${state.stage || "未入力"} ／ 学年・立場：${state.grade || "未入力"}</p>
+  `;
+
+  if (state.grade === "高校3年・既卒" && state.stage !== "候補がある") {
+    html += `
+      <div class="notice">
+        <b>早めの相談がおすすめです。</b>
+        締切が近い場合があるため、学校の進路担当や家族と公式の募集要項を確認してください。
+      </div>
+    `;
+  }
+
+  state.routes.forEach(route => {
+    html += `<button class="opt">${route}<br><b>→ ${actions[route]}</b></button>`;
+  });
+
+  if (state.priorities.length) {
+    html += `
+      <div class="result">
+        <b>比較するときの軸</b>
+        <p>${state.priorities.join("・")}を、候補ごとに公式サイトや説明会で確認しましょう。</p>
+      </div>
+    `;
+  }
+
+  if ($("free").value.trim()) {
+    html += `
+      <div class="result">
+        <b>メモ</b>
+        <p>${$("free").value}</p>
+      </div>
+    `;
+  }
+
+  $("analysis").innerHTML = html + "</div>";
+};
+
+$("searchBtn").onclick = search;
+$("query").onkeydown = e => {
+  if (e.key === "Enter") search();
+};
+
+$("type").onchange = search;
+$("purpose").onchange = search;
+
+function search() {
+  const query = $("query").value.normalize("NFKC").toLowerCase();
+  const type = $("type").value;
+  const purpose = $("purpose").value;
+
+  const results = topics.filter(topic => {
+    const text = topic.join(" ").toLowerCase();
+
+    return (!query || text.includes(query)) &&
+      (!type || topic[3] === type || topic[3] === "共通") &&
+      (!purpose || topic[4] === purpose);
+  });
+
+  $("searchResult").innerHTML = results.length
+    ? `<p class="small">${results.length}件見つかりました。</p>` + results.map(topic => `
+        <article class="card">
+          <span class="tag">${topic[2]}</span>
+          <h3>${topic[1]}</h3>
+          <p>${topic[6]}</p>
+          <div class="source">
+            出典：
+            <a href="${src[topic[7]][1]}" target="_blank" rel="noopener">
+              ${src[topic[7]][0]}（公式サイト）
+            </a>
+          </div>
+        </article>
+      `).join("")
+    : `<div class="card"><h3>条件に合うテーマがありません</h3><p>別の言葉にしたり、絞り込みを戻してみてください。</p></div>`;
+}
+
+show(location.hash.slice(1) || "home");
+</script>
+</body>
+</html>
